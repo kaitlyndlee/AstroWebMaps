@@ -1,2 +1,2 @@
 # AstroWebMaps
-Older implementation of OpenLayers for planetary mapping
+OpenLayers 4.x for planetary mapping
