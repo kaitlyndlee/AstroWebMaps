@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>OL4 TEST Page</title>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../js/openlayers/ol.css">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<!--
+    <script src="http://astrowebmaps.wr.usgs.gov/webmapatlas/Layers/maps.js"></script>
+    <script src="../js/openlayers/ol-debug.js"></script>
+    <script src="../js/astrowebmaps-loader.js"></script>
+-->
+  </head>
+
+<body>
+<h3>Openlayers 4 Test</h3>
+<select id="target" onchange="switchTarget();"><option value="Europa">Europa</option><option value="Io">Io</option><option selected="selected" value="Mars">Mars</option><option value="Mercury">Mercury</option><option value="Moon">Moon</option><select>
+
+<div id="mapDiv" >
+  <div id="map"></div>
+  <table id="mapBottom">
+     <tr><td rowspan="2"><div class="astroConsole">
+      <div id="astroConsoleTargetInfo"></div>
+      <div id="astroConsoleProjectionButtons"></div>
+      <div id="astroConsoleLonLatSelects"></div>
+      <div id="astroConsoleKey"></div>
+     </td>
+
+    <td>
+       <div  style="">Max Lat<br/><input type="text" id="astroBBTopLeftLat" size="10" onchange="pilotConstrain.mapSearchAlertOn();astroMap.boundingBoxDrawer.drawFromBounds();" value="" /></div>
+       <div>Min Lon<br/><input type="text" id="astroBBTopLeftLon" size="10" onchange="pilotConstrain.mapSearchAlertOn();astroMap.boundingBoxDrawer.drawFromBounds();" value="" /></div>
+       <div>Max Lon<br/><input type="text" id="astroBBBotRightLon" size="10" onchange="pilotConstrain.mapSearchAlertOn();astroMap.boundingBoxDrawer.drawFromBounds();" value="" /></div>
+       <div>Min Lat<br/><input type="text" id="astroBBBotRightLat" size="10" onchange="pilotConstrain.mapSearchAlertOn();astroMap.boundingBoxDrawer.drawFromBounds();" value="" /></div>
+       <div>WKT <br/><input type="text" name='astroBBWKT' id="astroBBWKT" size="50" onchange="astroMap.boundingBoxDrawer.drawFromForm();" /></div>
+       <div>Split WKT <br/><input type="text" name='astroBBDatelineWKT' id="astroBBDatelineWKT" size="50" onchange="astroMap.boundingBoxDrawer.drawFromForm();" /></div>
+     </td>
+
+     <td>
+
+       <div>
+         <input type="button" name="upcClearBoundingBoxButton" id="pilotBBClear" style="margin: 10px 5px 0px 0px;" id="upcClearBoundingBoxButton" value="Clear Bounding Box" onclick="astroMap.boundingBoxDrawer.removeAndUnstoreAll();" /> 
+        </div>
+       <br/>
+       <div class="upcSmallGray">Feature Finder</div>
+       <div id="astroFeatureFinder"></div>
+
+
+       <br/>
+     </td>
+     </tr>
+   </table>
+</div>
+
+
+
+
+<script>
+
+
+function switchTarget() {
+   astroMap.destroy();
+   var target = document.getElementById('target').value;
+   astroMap.mapSettings.target = target;
+   astroMap.init()
+}
+
+function setupMap() {
+
+  var target = document.getElementById('target').value;
+  var currentProjection = 'cylindrical';
+
+  var consoleSettings = {
+    astroWebMapsBasePath: 'http://astrowebmaps.wr.usgs.gov/webmapatlas/',
+    target: target,
+    projButtons: true,
+    lonLatSelects: true,
+    mouseLonLat: true,
+    featureFinder: true
+  };
+
+  var mapSettings = {
+    mapDiv: 'map',
+    target: target,
+    projection: currentProjection,
+    showNomenclature: false,
+    datelineWrap: true,
+    vectorLayerName: 'Footprints',
+    defaultZoomLevel: 2,
+    defaultCenterLat: 0,
+    defaultCenterLon: 180,
+    imagePath: '../images/'
+  };
+
+  var controlSettings = {
+    zoomBar: true,
+    layerSwitcher: true,
+    graticule: true,
+    featureSearch: false,
+    scaleLine: true,
+    overviewMap: false,
+    mousePosition: true,
+    zoomButton: true,
+    boundingBoxDrawer: true,
+    homeButton: true,
+    selectButton: true,
+    navButton: true,
+    downloadButton: true,
+    defaultControl: "select",
+    decimalPlaces: 2
+    //selectHandler: pilotSearch.mapSelect,
+    //boundingBoxDrawHandler: pilotSearchBoundingBoxHandler
+    //unselectHandler: pilotSearch.mapUnselect
+  };
+
+  astroMap = new AstroMap(mapSettings, controlSettings, consoleSettings, null);
+  console.log(astroMap);
+
+}
+</script>
+
+<script>
+// must wait for OL, astrowebmaps, and maps.js to load before creating the map. . . 
+//    for debug loader use "../js/astrowebmaps-loader.js"
+//    for single file use "../build/js-singlefile/AstroWebMaps.js"
+$(window).load (function() {
+
+$.getScript("../js/openlayers/ol-astro.js", function() {
+    $.getScript("../js/astrowebmaps-loader.js", function() {
+      $.getScript("../js/astrowebmaps/Map/Control/ol4-layerswitcher-oo.js", function() {
+         $.getScript("http://astrowebmaps.wr.usgs.gov/webmapatlas/Layers/maps.js", function() {
+             setupMap();
+         });
+     });
+  });
+});
+
+});
+</script>
+</body>
+
+
+</html>
